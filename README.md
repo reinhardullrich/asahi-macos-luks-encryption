@@ -8,6 +8,8 @@ This repo assumes an AI agent/model is running in macOS during most of the work.
 
 The human still handles the parts that should not be delegated: backup confirmation, administrator approvals, destructive confirmation, LUKS passphrase entry, physical boot selection, first unlock, Fedora Asahi finalization, and cleanup authorization.
 
+Important interaction rule: any command that may ask for a password, `sudo` approval, destructive confirmation, LUKS passphrase, or helper-VM console input must run in a visible macOS Terminal window that the human can see and type into. The AI must not start those interactive steps only inside a hidden tool terminal.
+
 ## Documents
 
 - [`asahi-luks-encryption-runbook.md`](asahi-luks-encryption-runbook.md): full technical runbook and source cross-checks
@@ -21,6 +23,7 @@ This playbook is intentionally a little stricter than simply following the upstr
 - The guide explicitly tells the user to ignore the helper VM's upstream `When finished, type: poweroff` message until the finalization tool has been copied and verified.
 - The guide uses a full shutdown before holding the power button for Startup Options. It does not rely on pressing Restart and then trying to catch the boot picker during reboot.
 - The guide treats macOS partition numbers such as `disk0sN` as temporary. If the Mac reboots, partition discovery must be repeated before any write-capable command.
+- The guide requires password prompts, destructive confirmations, LUKS passphrases, and helper-VM console input to happen in a visible macOS Terminal window, not in a hidden AI/tool terminal.
 - The guide separates the human-only steps from the AI-handled macOS work, so the user knows exactly when to approve, type a passphrase, choose a boot option, or stop.
 - The guide pins the helper project to release `v0.1.1` and uses the current Alpine aarch64 UEFI cloud-init helper image path instead of stale Fedora or old Alpine VM images.
 - The guide explicitly protects macOS, System Recovery, the iBoot/System container, and the Asahi APFS stub from cleanup or write operations.
