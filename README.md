@@ -2,10 +2,16 @@
 
 A safety-first runbook for encrypting an existing Fedora Asahi Remix installation on Apple Silicon with LUKS2, using the recommended from-macOS offline helper-VM path.
 
+## Operating Assumption
+
+This repo assumes an AI agent/model is running in macOS during most of the work. Examples are Codex, Cloud Code, or another local AI agent that can run commands, inspect outputs, prepare tools, start the helper VM, and monitor progress with explicit human authorization.
+
+The human still handles the parts that should not be delegated: backup confirmation, administrator approvals, destructive confirmation, LUKS passphrase entry, physical boot selection, first unlock, Fedora Asahi finalization, and cleanup authorization.
+
 ## Documents
 
 - [`asahi-luks-encryption-runbook.md`](asahi-luks-encryption-runbook.md): full technical runbook and source cross-checks
-- [`human-interaction-mvp.md`](human-interaction-mvp.md): only the human actions required when an AI agent handles the macOS-side work
+- [`human-interaction-guide.md`](human-interaction-guide.md): only the human actions required when an AI agent handles the macOS-side work
 
 ## Scope
 
