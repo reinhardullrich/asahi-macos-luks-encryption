@@ -8,6 +8,23 @@ Assumption: an AI agent such as Codex, Cloud Code, or another local AI agent is 
 
 The human still has to perform several actions because they involve physical access, private secrets, irreversible consent, or rebooting away from macOS.
 
+## Visible Terminal Rule
+
+Any step that may require human typing must run in a visible macOS Terminal window that the human can see and interact with.
+
+This includes:
+
+- macOS administrator password prompts
+- `sudo` prompts
+- destructive `YES` confirmations
+- LUKS passphrase entry
+- helper VM login and console commands
+- first-boot unlock or recovery commands
+
+The AI must not run these interactive steps only inside a hidden tool terminal. If the AI starts a hidden command and it asks for a password or passphrase, the AI must cancel it and reopen the command in a visible external Terminal window.
+
+The human should never type passwords or passphrases into chat. They belong only in the visible Terminal, macOS prompt, helper VM console, or Fedora boot prompt.
+
 ## Human Responsibilities at a Glance
 
 The human must:
@@ -29,6 +46,7 @@ The human must:
 The human must not:
 
 - type the LUKS passphrase into chat
+- type a password or passphrase into a hidden AI/tool terminal
 - approve encryption before seeing the exact target partition
 - approve anything that targets `/dev/disk0` as a whole disk
 - use Disk Utility for partition decisions
@@ -72,6 +90,8 @@ macOS may ask for:
 - a Terminal password prompt for `sudo`
 
 The human should approve only if the AI has just explained what operation is being performed.
+
+Before approving, the human must be able to see the actual prompt in a normal macOS Terminal window or macOS system prompt. If the AI says a hidden terminal is waiting for a password, stop and ask the AI to reopen the command in a visible Terminal window.
 
 Safe examples:
 
