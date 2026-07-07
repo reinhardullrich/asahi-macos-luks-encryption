@@ -6,6 +6,8 @@ Purpose: encrypt an existing Fedora Asahi Remix installation on this Apple Silic
 
 This document is a planning and execution guide. It is intentionally conservative. The actual encryption step must not be run until the partition IDs have been shown and explicitly confirmed.
 
+Operating assumption: an AI agent such as Codex, Cloud Code, or another local AI agent is running in macOS and can perform the macOS-side work with explicit human authorization. That agent can download tooling, check sources, prepare QEMU, discover partitions, run preflight, start and monitor the helper VM, and clean up temporary helper files. The human still performs physical actions, administrator approvals, destructive confirmations, passphrase entry, reboot selection, first unlock, and Fedora Asahi finalization.
+
 ## Short Summary
 
 We will use the `pjordanandrsn/asahi-luks-setup` project, specifically the `asahi-luks-mac` launcher.
@@ -574,11 +576,15 @@ poweroff
 
 Reboot the Mac into Fedora Asahi:
 
-1. Shut down or reboot.
-2. Hold the power button for startup options.
-3. Choose Fedora/Asahi.
-4. Wait for the LUKS prompt.
-5. Enter the passphrase.
+1. Shut down the Mac completely.
+2. Wait until the screen is fully off.
+3. From the powered-off state, press the power button and keep holding it.
+4. Keep holding until startup options appear.
+5. Choose Fedora/Asahi.
+6. Wait for the LUKS prompt.
+7. Enter the passphrase.
+
+Do not use a normal Restart and then try to hold the power button during the reboot. The safer Apple Silicon path is full shutdown first, then press and hold the power button while starting from off.
 
 Prompt behavior note:
 
@@ -597,7 +603,7 @@ After unlock:
 
 After the relabel boot completes and the system reaches Fedora Asahi:
 
-Important operational note: once the Mac is booted into Fedora Asahi, this Codex session in macOS is not running the commands anymore. Either we stage the `asahi-luks-setup` script into the Asahi root before rebooting, or the user runs the final commands manually inside Fedora Asahi.
+Important operational note: once the Mac is booted into Fedora Asahi, the AI agent running in macOS is not running the commands anymore. Either we stage the `asahi-luks-setup` script into the Asahi root before rebooting, or the user runs the final commands manually inside Fedora Asahi.
 
 The offline encryption step installs a login reminder in the target root, but it does not guarantee that `/usr/local/sbin/asahi-luks-setup` exists after first boot. Plan for this before leaving macOS.
 
