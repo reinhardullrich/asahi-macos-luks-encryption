@@ -8,6 +8,8 @@ This document is a planning and execution guide. It is intentionally conservativ
 
 Operating assumption: an AI agent such as Codex, Cloud Code, or another local AI agent is running in macOS and can perform the macOS-side work with explicit human authorization. That agent can download tooling, check sources, prepare QEMU, discover partitions, run preflight, start and monitor the helper VM, and clean up temporary helper files. The human still performs physical actions, administrator approvals, destructive confirmations, passphrase entry, reboot selection, first unlock, and Fedora Asahi finalization.
 
+Important interaction rule: any step that expects human input must run in a visible macOS Terminal window or real system prompt that the human can see and type into. This includes `sudo`, administrator approval, destructive `YES` confirmation, LUKS passphrase entry, and helper VM console input. The AI must not leave the human-facing prompt inside a hidden tool terminal.
+
 ## Short Summary
 
 We will use the `pjordanandrsn/asahi-luks-setup` project, specifically the `asahi-luks-mac` launcher.
@@ -134,6 +136,7 @@ Do not run the encryption until all of these are true:
 - The root partition has passed a btrfs magic check.
 - The partition list has been shown to the user.
 - The user explicitly confirms the exact target partition.
+- Any password prompt, destructive confirmation, passphrase prompt, or helper VM console step will run in a visible macOS Terminal window the human can interact with.
 - Selection is based on partition role, size, physical grouping, and filesystem magic, not on UUID alone.
 
 Never allow commands to write to:
