@@ -441,6 +441,22 @@ Suggested confirmation wording:
 I confirm that /dev/disk0sX is the Fedora Asahi btrfs root partition and I want to encrypt it.
 ```
 
+When the helper asks at the Terminal prompt, the destructive confirmation must be exactly uppercase:
+
+```text
+YES
+```
+
+Lowercase `yes` is rejected and safely aborts before encryption starts.
+
+After that, cryptsetup asks its own destructive confirmation:
+
+```text
+Are you sure? (Type 'yes' in capital letters):
+```
+
+Type exactly uppercase `YES` there too. Then cryptsetup asks for the new LUKS passphrase twice.
+
 ## Phase 7: Prevent Sleep and Use a Durable Session
 
 The encryption can take 15 to 30 minutes or longer, depending on partition size.
@@ -892,7 +908,8 @@ Encryption checklist:
 - [ ] `caffeinate` or equivalent sleep prevention is active.
 - [ ] Start durable session.
 - [ ] Run `asahi-luks-mac encrypt`.
-- [ ] Confirm `YES` only after seeing the correct target.
+- [ ] Confirm exactly uppercase `YES` only after seeing the correct target.
+- [ ] Confirm cryptsetup's own prompt with exactly uppercase `YES`.
 - [ ] Set LUKS passphrase.
 - [ ] Wait for encryption completion.
 - [ ] Reopen LUKS root in helper VM.
