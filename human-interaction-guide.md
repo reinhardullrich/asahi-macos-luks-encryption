@@ -18,12 +18,13 @@ The human must:
 4. Read and explicitly confirm the exact target partition.
 5. Type the destructive `YES` confirmation.
 6. Choose and type the LUKS passphrase.
-7. Reboot into Fedora Asahi manually.
-8. Unlock the encrypted Asahi installation at boot.
-9. Allow SELinux relabeling to finish.
-10. Run the finalization step inside Fedora Asahi.
-11. Verify that Fedora Asahi and macOS both still boot.
-12. Authorize cleanup of temporary VM files.
+7. Wait for the AI to stage the finalization tool inside the encrypted Fedora root.
+8. Reboot into Fedora Asahi manually.
+9. Unlock the encrypted Asahi installation at boot.
+10. Allow SELinux relabeling to finish.
+11. Run the finalization step inside Fedora Asahi.
+12. Verify that Fedora Asahi and macOS both still boot.
+13. Authorize cleanup of temporary VM files.
 
 The human must not:
 
@@ -33,6 +34,7 @@ The human must not:
 - use Disk Utility for partition decisions
 - close the Terminal window during encryption
 - interrupt the encryption, relabeling, or finalization steps
+- reboot before the AI confirms the finalization tool was staged
 - delete or modify Asahi, macOS, iBoot/System, or System Recovery partitions
 
 ## Before the AI Starts
@@ -241,11 +243,37 @@ If the Mac loses power or the encryption is interrupted, do not reinstall and do
 
 At the end of the helper VM step, the screen should indicate that encryption and boot wiring are complete.
 
-The AI may ask the helper VM to power off.
+Before the helper VM powers off, the AI must stage the finalization tool into the encrypted Fedora Asahi root.
+
+Reason: the offline encryption script sets up the encrypted boot, but the final command later is:
+
+```sh
+sudo /usr/local/sbin/asahi-luks-setup finalize
+```
+
+That file must already exist inside Fedora Asahi before the first boot.
+
+The AI should reopen the encrypted root in the helper VM, copy the pinned `asahi-luks-setup` script into:
+
+```text
+/usr/local/sbin/asahi-luks-setup
+```
+
+The human may need to type the new LUKS passphrase one more time so the helper VM can reopen the encrypted root for this copy step.
+
+The human should wait until the AI confirms:
+
+```text
+Finalization tool staged successfully.
+```
+
+The AI may then ask the helper VM to power off.
 
 The human must wait for the AI to say that the helper VM is off and it is time to reboot.
 
 Do not reboot before the AI confirms that the helper VM has finished.
+
+Do not reboot if the AI says the finalization tool could not be staged.
 
 ## Rebooting Into Fedora Asahi
 
@@ -332,6 +360,8 @@ First check whether the tool exists:
 ls -l /usr/local/sbin/asahi-luks-setup
 ```
 
+This file should exist because the AI staged it before the helper VM powered off.
+
 If the file exists, run:
 
 ```sh
@@ -347,13 +377,13 @@ Expected result:
 - finalization rebuilds initramfs on the real Apple Silicon hardware
 - finalization ends without an error
 
-If `/usr/local/sbin/asahi-luks-setup` does not exist, stop and do not improvise. Boot back into macOS and tell the AI:
+If `/usr/local/sbin/asahi-luks-setup` does not exist, stop and do not improvise. This means the required staging step did not happen or failed. Boot back into macOS and tell the AI:
 
 ```text
 Finalize tool is missing in Fedora Asahi.
 ```
 
-The AI can then help stage or copy the script safely.
+The AI must then use the helper/recovery path to mount the encrypted root and copy the exact pinned script into `/usr/local/sbin/asahi-luks-setup`.
 
 ## Reboot After Finalization
 
