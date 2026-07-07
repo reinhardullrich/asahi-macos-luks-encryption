@@ -13,6 +13,19 @@ The human still handles the parts that should not be delegated: backup confirmat
 - [`asahi-luks-encryption-runbook.md`](asahi-luks-encryption-runbook.md): full technical runbook and source cross-checks
 - [`human-interaction-guide.md`](human-interaction-guide.md): only the human actions required when an AI agent handles the macOS-side work
 
+## Workflow Improvements In This Playbook
+
+This playbook is intentionally a little stricter than simply following the upstream helper's printed instructions. The small improvements are:
+
+- The AI stages the pinned `asahi-luks-setup` script into the encrypted Fedora Asahi root as `/usr/local/sbin/asahi-luks-setup` before the helper VM powers off. This makes the later `finalize` command available inside Fedora Asahi.
+- The guide explicitly tells the user to ignore the helper VM's upstream `When finished, type: poweroff` message until the finalization tool has been copied and verified.
+- The guide uses a full shutdown before holding the power button for Startup Options. It does not rely on pressing Restart and then trying to catch the boot picker during reboot.
+- The guide treats macOS partition numbers such as `disk0sN` as temporary. If the Mac reboots, partition discovery must be repeated before any write-capable command.
+- The guide separates the human-only steps from the AI-handled macOS work, so the user knows exactly when to approve, type a passphrase, choose a boot option, or stop.
+- The guide pins the helper project to release `v0.1.1` and uses the current Alpine aarch64 UEFI cloud-init helper image path instead of stale Fedora or old Alpine VM images.
+- The guide explicitly protects macOS, System Recovery, the iBoot/System container, and the Asahi APFS stub from cleanup or write operations.
+- Cleanup is limited to VM/helper/download artifacts and only happens after Fedora Asahi and macOS both boot successfully.
+
 ## Scope
 
 This repository is documentation only. It does not contain an installer or automation script.
