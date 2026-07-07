@@ -198,7 +198,15 @@ If the target is correct, the human types:
 YES
 ```
 
-Use uppercase letters.
+Use uppercase letters exactly. The helper expects `YES`, not `yes`. If the human types lowercase `yes`, the helper aborts before encryption starts and the command must be run again.
+
+After the helper accepts `YES`, cryptsetup asks its own confirmation:
+
+```text
+Are you sure? (Type 'yes' in capital letters):
+```
+
+The human types exactly uppercase `YES` there as well. After this second `YES`, cryptsetup asks for the new LUKS passphrase twice.
 
 If the target is not correct, the human types nothing and tells the AI:
 
