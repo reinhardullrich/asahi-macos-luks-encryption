@@ -245,6 +245,14 @@ At the end of the helper VM step, the screen should indicate that encryption and
 
 Before the helper VM powers off, the AI must stage the finalization tool into the encrypted Fedora Asahi root.
 
+The helper VM may show an upstream message saying something like:
+
+```text
+When finished, type: poweroff
+```
+
+Do not follow that message yet. In this playbook, encryption is not finished until the finalization tool has also been staged.
+
 Reason: the offline encryption script sets up the encrypted boot, but the final command later is:
 
 ```sh
@@ -430,11 +438,16 @@ After Fedora Asahi has booted successfully at least twice, the human should conf
 
 Steps:
 
-1. Restart the Mac.
-2. Choose macOS from startup options if needed.
-3. Log into macOS.
-4. Confirm files and normal macOS behavior look correct.
-5. Reopen Codex or the AI agent if needed.
+1. If macOS is already the default boot option, a normal restart is fine.
+2. If the startup options screen is needed, shut down the Mac completely.
+3. Wait until the screen is fully off.
+4. From the powered-off state, press the power button and keep holding it until startup options appear.
+5. Choose macOS.
+6. Log into macOS.
+7. Confirm files and normal macOS behavior look correct.
+8. Reopen Codex or the AI agent if needed.
+
+Do not rely on pressing Restart and then holding the power button if you need the startup options screen. The safer Apple Silicon path is full shutdown first, then press and hold while starting from off.
 
 If macOS does not boot, stop and do not delete anything.
 
