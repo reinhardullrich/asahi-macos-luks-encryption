@@ -2,7 +2,10 @@
 
 A safety-first runbook for encrypting an existing Fedora Asahi Remix installation on Apple Silicon with LUKS2, using the recommended from-macOS offline helper-VM path.
 
-The main guide is [`asahi-luks-encryption-runbook.md`](asahi-luks-encryption-runbook.md).
+## Documents
+
+- [`asahi-luks-encryption-runbook.md`](asahi-luks-encryption-runbook.md): full technical runbook and source cross-checks
+- [`human-interaction-mvp.md`](human-interaction-mvp.md): only the human actions required when an AI agent handles the macOS-side work
 
 ## Scope
 
