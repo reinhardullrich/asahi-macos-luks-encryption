@@ -571,13 +571,17 @@ Required finalizer staging before leaving the helper VM:
 
 The upstream `v0.1.1` offline `encrypt` path installs the login reminder, but it does not call `self_install` into the target Fedora root. Therefore the helper VM must copy the same script into the encrypted Fedora Asahi system before poweroff. Otherwise the later `finalize` command may not exist.
 
+Important: the current helper VM banner may still say `When finished, type: poweroff`, and `asahi-luks-mac` may print reboot/finalize instructions after the VM exits. Treat those upstream messages as incomplete for this playbook. Do not power off the helper VM until the finalizer staging below has succeeded.
+
 After `encrypt` completes and returns to the helper VM prompt, run:
 
 ```sh
 cryptsetup luksOpen /dev/vdb luks-root
 mkdir -p /mnt/asahi-root
 mount -o subvol=root /dev/mapper/luks-root /mnt/asahi-root
-install -D -m 0755 /mnt/alts/asahi-luks-setup /mnt/asahi-root/usr/local/sbin/asahi-luks-setup
+mkdir -p /mnt/asahi-root/usr/local/sbin
+cp /mnt/alts/asahi-luks-setup /mnt/asahi-root/usr/local/sbin/asahi-luks-setup
+chmod 0755 /mnt/asahi-root/usr/local/sbin/asahi-luks-setup
 ls -l /mnt/asahi-root/usr/local/sbin/asahi-luks-setup
 sync
 umount /mnt/asahi-root
@@ -649,7 +653,9 @@ If it does not exist, stop. Do not improvise a replacement command inside Fedora
 cryptsetup luksOpen /dev/vdb luks-root
 mkdir -p /mnt/asahi-root
 mount -o subvol=root /dev/mapper/luks-root /mnt/asahi-root
-install -D -m 0755 /mnt/alts/asahi-luks-setup /mnt/asahi-root/usr/local/sbin/asahi-luks-setup
+mkdir -p /mnt/asahi-root/usr/local/sbin
+cp /mnt/alts/asahi-luks-setup /mnt/asahi-root/usr/local/sbin/asahi-luks-setup
+chmod 0755 /mnt/asahi-root/usr/local/sbin/asahi-luks-setup
 sync
 umount /mnt/asahi-root
 cryptsetup close luks-root
@@ -705,7 +711,7 @@ Enforcing
 
 Check macOS safety:
 
-- Boot macOS.
+- Boot macOS. If startup options are needed, shut down completely first, then press and hold the power button while starting from off.
 - Confirm macOS starts normally.
 - Confirm APFS volumes and recovery are untouched.
 
@@ -887,6 +893,7 @@ Encryption checklist:
 - [ ] Set LUKS passphrase.
 - [ ] Wait for encryption completion.
 - [ ] Reopen LUKS root in helper VM.
+- [ ] Ignore the upstream `poweroff` banner until finalizer staging is done.
 - [ ] Copy `/mnt/alts/asahi-luks-setup` to `/usr/local/sbin/asahi-luks-setup` inside the encrypted Fedora root.
 - [ ] Verify the staged finalizer with `ls -l`.
 - [ ] Power off helper VM.
