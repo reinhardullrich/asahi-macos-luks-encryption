@@ -21,6 +21,7 @@ This playbook is intentionally a little stricter than simply following the upstr
 
 - The AI stages the pinned `asahi-luks-setup` script into the encrypted Fedora Asahi root as `/usr/local/sbin/asahi-luks-setup` before the helper VM powers off. This makes the later `finalize` command available inside Fedora Asahi.
 - The guide explicitly tells the user to ignore the helper VM's upstream `When finished, type: poweroff` message until the finalization tool has been copied and verified.
+- The destructive confirmations must be typed exactly as uppercase `YES`. The helper's confirmation rejects lowercase `yes` and aborts before encryption starts; cryptsetup's own confirmation also requires uppercase `YES`.
 - The guide uses a full shutdown before holding the power button for Startup Options. It does not rely on pressing Restart and then trying to catch the boot picker during reboot.
 - The guide treats macOS partition numbers such as `disk0sN` as temporary. If the Mac reboots, partition discovery must be repeated before any write-capable command.
 - The guide requires password prompts, destructive confirmations, LUKS passphrases, and helper-VM console input to happen in a visible macOS Terminal window, not in a hidden AI/tool terminal.
